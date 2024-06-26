@@ -9,10 +9,7 @@ private:
 	glm::vec3 max_{ 100.0f, 100.0f, 100.0f };
 public:
 	Box();
-	Box( glm::vec3 min, glm::vec3 max):
-		min_(min),
-		max_(max)
-	{}
+	Box(glm::vec3 min, glm::vec3 max);
 	float area()const;
 	float volume()const;
 };
