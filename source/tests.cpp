@@ -3,6 +3,9 @@
 #include "shape.hpp"
 #include "sphere.hpp"
 #include "box.hpp"
+#include <ostream>
+#include <glm/glm.hpp>
+#include <glm/gtx/intersect.hpp>
 
 TEST_CASE(" box-test ", "[box-test]")
 {
@@ -33,7 +36,23 @@ TEST_CASE(" sphere-test ", "[sp-test]") {
 	REQUIRE(Approx(s3.area()).margin(10e-5) == 0.0f);
 }
 
-int main(int argc, char *argv[])
+TEST_CASE("intersect_ray_sphere", "[intersect]")
 {
+	glm::vec3 ray_origin{ 0.0f, 0.0f, 0.0f };
+
+	glm::vec3 ray_direction{ 0.0f, 0.0f, 1.0f };
+
+	glm::vec3 sphere_center{ 0.0f, 0.0f, 5.0f };
+	float sphere_radius{ 1.0f };
+
+	float distance = 0.0f;
+	auto result = glm::intersectRaySphere(
+		ray_origin, ray_direction, sphere_center, sphere_radius * sphere_radius, distance);
+	REQUIRE(distance == Approx(4.0f));
+}
+
+
+int main(int argc, char *argv[])
+{ 
   return Catch::Session().run(argc, argv);
 }
