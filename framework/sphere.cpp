@@ -3,24 +3,34 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtx/intersect.hpp>
+#include <iostream>
 
 Sphere::Sphere():
 	Shape::Shape{},
     rad{ 10.0f },
 	point{ 100.0f, 100.0f, 100.0f }
-{}
+{std::cout << "Sphere ctor" << std::endl; }
+
+Sphere::~Sphere()
+{
+	std::cout << "Sphere dtor" << std::endl;
+}
 
 Sphere::Sphere(float r, glm::vec3 p) :
 	Shape::Shape{},
 	rad(r),
 	point(p)
-{}
+{
+	std::cout << "Sphere ctor" << std::endl;
+}
 
 Sphere::Sphere(float r, glm::vec3 p, std::string name, glm::vec3 color): 
 	Shape::Shape{name, color},
 	rad(r),
 	point(p)
-{}
+{
+	std::cout << "Sphere ctor" << std::endl;
+}
 
 
 float Sphere::volume()const {
@@ -49,7 +59,7 @@ Hitpoint Sphere::intersect(Ray r)const {
 		float a = (r.direction.x) * (r.direction.x) +
 			(r.direction.y) * (r.direction.y) + (r.direction.z) * (r.direction.z);
 		float b = 2 * (abs(r.origin.x - point.x) * r.direction.x +
-		 + abs(r.origin.y - point.y) * r.direction.y + abs(r.origin.z - point.z) * r.direction.z;
+			+abs(r.origin.y - point.y) * r.direction.y + abs(r.origin.z - point.z) * r.direction.z);
 		float c = (abs(r.origin.x - point.x) * abs(r.origin.x - point.x) +
 			abs(r.origin.y - point.y) * abs(r.origin.y - point.y) +
 			abs(r.origin.z - point.z) * abs(r.origin.z - point.z)) - (rad * rad);

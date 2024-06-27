@@ -49,6 +49,31 @@ TEST_CASE("intersect_ray_sphere", "[intersect]")
 	auto result = glm::intersectRaySphere(
 		ray_origin, ray_direction, sphere_center, sphere_radius * sphere_radius, distance);
 	REQUIRE(distance == Approx(4.0f));
+
+	Sphere s1{ sphere_radius, sphere_center };
+	Ray r1{ ray_origin, ray_direction };
+	Hitpoint h1 = s1.intersect(r1);
+	REQUIRE(h1.distance == distance);
+	REQUIRE(h1.hit == result);
+
+
+}
+
+TEST_CASE("destruktor-test", "[dtor-test]")
+{
+	std::cout << " Beginn " << std::endl;
+	glm::vec3 red = { 1.0f, 0.0f, 0.0f };
+	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
+	std::string name1 = "sphere0";
+	std::string name2 = "sphere1";
+	Sphere* s1 = new Sphere{ 1.2f, position,  name1, red };
+	Shape* s2 = new Sphere{ 1.2f, position,  name2, red };
+
+	s1->print(std::cout);
+	s2->print(std::cout);
+
+	delete s1;
+	delete s2;
 }
 
 

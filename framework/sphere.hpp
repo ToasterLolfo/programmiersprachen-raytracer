@@ -12,10 +12,11 @@ private:
 	glm::vec3 point{ 100.0f, 100.0f, 100.0f };
 public:
 	Sphere();
+	~Sphere();
 	Sphere(float r, glm::vec3 p);
 	Sphere(float r, glm::vec3 p, std::string name, glm::vec3 color);
-	float Shape::area()const;
-	float Shape::volume()const;
+	float Shape::area()const override;
+	float Shape::volume()const override;
 	std::ostream& print(std::ostream& os)const;
 	Hitpoint intersect(Ray r)const;
 };

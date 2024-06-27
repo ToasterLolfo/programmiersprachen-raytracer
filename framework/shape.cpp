@@ -1,4 +1,5 @@
 #include "shape.hpp"
+#include <iostream>
 
 
 Shape::Shape():
@@ -8,8 +9,15 @@ Shape::Shape():
 
 Shape::Shape(std::string name, glm::vec3 color):
 	name_(name),
-	color_(color)
-{}
+	color_(color) 
+{
+	std::cout << "Shape ctor" << std::endl;
+}
+
+Shape::~Shape()
+{
+	std::cout << "Shape dtor" << std::endl;
+}
 
 std::ostream& Shape::print(std::ostream& os)const {
 	return os << name_ << " " << color_.x << " " << color_.y << " " << color_.z << std::endl;
