@@ -17,6 +17,6 @@ public:
 	float Shape::area()const;
 	float Shape::volume()const;
 	std::ostream& print(std::ostream& os)const;
-	Hitpoint intersect(Ray r);
+	Hitpoint intersect(Ray r)const;
 };
 #endif

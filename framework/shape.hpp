@@ -14,6 +14,8 @@ public:
 	Shape();
 	Shape(std::string name, glm::vec3 color);
 	virtual std::ostream& print(std::ostream& os)const;
+	virtual std::string get_name()const;
+	virtual glm::vec3 get_color()const;
 };
 std::ostream& operator<<(std::ostream& os, Shape const& s);
 #endif
