@@ -3,13 +3,20 @@
 
 
 Shape::Shape():
-	name_{ "Quader" },
+	name_{ "Körper" },
 	color_{ 0.5f, 0.5f, 0.5f }
 {}
 
 Shape::Shape(std::string name, glm::vec3 color):
 	name_(name),
 	color_(color) 
+{
+	std::cout << "Shape ctor" << std::endl;
+}
+
+Shape::Shape(std::string name) :
+	name_(name),
+	color_{ 0.5f, 0.5f, 0.5f }
 {
 	std::cout << "Shape ctor" << std::endl;
 }

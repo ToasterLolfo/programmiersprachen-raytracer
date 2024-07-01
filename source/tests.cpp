@@ -36,6 +36,13 @@ TEST_CASE(" sphere-test ", "[sp-test]") {
 	REQUIRE(Approx(s3.area()).margin(10e-5) == 0.0f);
 }
 
+
+TEST_CASE("Outstream-test", "[os-test]") {
+	Sphere s = {};
+	Box b = {};
+	std::cout << b << " " << s << std::endl;
+}
+
 TEST_CASE("intersect_ray_sphere", "[intersect]")
 {
 	glm::vec3 ray_origin{ 0.0f, 0.0f, 0.0f };
@@ -56,6 +63,45 @@ TEST_CASE("intersect_ray_sphere", "[intersect]")
 	REQUIRE(h1.distance == distance);
 	REQUIRE(h1.hit == result);
 
+
+	glm::vec3 ray_origin1{ 0.0f, 0.0f, 0.0f };
+
+	glm::vec3 ray_direction1{ 0.0f, 1.0f, 0.0f };
+
+	glm::vec3 sphere_center1{ 0.0f, 0.0f, 5.0f };
+	float sphere_radius1{ 1.0f };
+
+	float distance1 = 0.0f;
+	Sphere s2{ sphere_radius1, sphere_center1 };
+	Ray r2{ ray_origin1, ray_direction1 };
+	Hitpoint h2 = s2.intersect(r2);
+
+	REQUIRE(h2.hit == false);
+
+	glm::vec3 ray_origin2{ 0.0f, 1.0f, 0.0f };
+
+	glm::vec3 ray_direction2{ 0.0f, 0.0f, 1.0f };
+
+	glm::vec3 sphere_center2{ 0.0f, 0.0f, 5.0f };
+	float sphere_radius2{ 1.0f };
+
+	float distance2 = 0.0f;
+	Sphere s3{ sphere_radius2, sphere_center2 };
+	Ray r3{ ray_origin2, ray_direction2 };
+	Hitpoint h3 = s3.intersect(r3);
+
+	float dist = 0.0f;
+	auto v = glm::normalize(r3.direction);
+	glm::intersectRaySphere(ray_origin2, v, sphere_center2, sphere_radius2 * sphere_radius2, dist);
+	glm::vec3 ergeb = { 0, 1, 5 };
+
+	REQUIRE(h3.hit == true);
+	REQUIRE(h3.color_obj == s3.get_color());
+	REQUIRE(h3.name_obj == s3.get_name());
+	std::cout << h3.hit_p.x << h3.hit_p.y << h3.hit_p.z << std::endl;
+	REQUIRE(h3.hit_p == ergeb);
+	REQUIRE(h3.distance == dist);
+	REQUIRE(h3.ray_dir == ray_direction2);
 
 }
 

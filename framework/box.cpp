@@ -2,13 +2,13 @@
 #include "cmath"
 
 Box::Box():
-	Shape::Shape{},
+	Shape::Shape{"Quader"},
 	min_{ 0.0f, 0.0f , 0.0f },
 	max_{ 100.0f, 100.0f, 100.0f }
 {}
 
 Box::Box(glm::vec3 min, glm::vec3 max) :
-	Shape::Shape{},
+	Shape::Shape{"Quader"},
 	min_(min),
 	max_(max)
 {}

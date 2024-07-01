@@ -13,6 +13,7 @@ public:
 	virtual float volume()const = 0;
 	Shape();
 	Shape(std::string name, glm::vec3 color);
+	Shape(std::string name);
 	~Shape();
 	virtual std::ostream& print(std::ostream& os)const;
 	virtual std::string get_name()const;
