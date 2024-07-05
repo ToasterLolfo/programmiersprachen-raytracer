@@ -47,7 +47,7 @@ std::ostream& Sphere::print(std::ostream& os)const {
 	return os << rad << " " << point.x << " " << point.y << " " << point.z << std::endl;
 }
 
-Hitpoint Sphere::intersect(Ray const& ray)const {
+Hitpoint Sphere::intersect(Ray const& ray) {
 	auto v = glm::normalize(ray.direction);
 	float dist = 0.0f;
 	if( glm::intersectRaySphere(ray.origin, v, point, rad * rad, dist)) {

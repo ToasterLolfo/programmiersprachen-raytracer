@@ -122,6 +122,30 @@ TEST_CASE("destruktor-test", "[dtor-test]")
 	delete s2;
 }
 
+TEST_CASE("box-intersect-test", "[b-inter-test]")
+{
+	Box b = {};
+	Ray r1 = {};
+	Ray r2 = {};
+	Ray r3 = {};
+	r1.direction = { 1, 0, 0 };
+	r2.direction = { 0, 1, 0 };
+	r3.direction = { 0, 0, 1 };
+	r1.origin = { 0, 0 ,0 };
+	r2.origin = { 110, 110, 110 };
+	r3.origin = { 50, 50, 150 };
+	Hitpoint h1 = b.intersect(r1);
+	Hitpoint h2 = b.intersect(r2);
+	Hitpoint h3 = b.intersect(r3);
+	REQUIRE(h1.hit == true);
+	REQUIRE(h1.hit_p == glm::vec3 {0, 0, 0});
+	REQUIRE(Approx(h1.distance) == 0.0f);
+	REQUIRE(h2.hit == false);
+	REQUIRE(h3.hit == true);
+	REQUIRE(Approx(h3.distance) == -150.0f);
+
+
+}
 
 int main(int argc, char *argv[])
 { 

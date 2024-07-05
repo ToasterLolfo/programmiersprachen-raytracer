@@ -18,6 +18,6 @@ public:
 	float Shape::area()const override;
 	float Shape::volume()const override;
 	std::ostream& print(std::ostream& os)const;
-	Hitpoint intersect(Ray const& ray)const override;
+	Hitpoint intersect(Ray const& ray) override;
 };
 #endif
