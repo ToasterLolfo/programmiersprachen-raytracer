@@ -34,3 +34,30 @@ std::ostream& Box::print(std::ostream& os)const {
 	Shape::print(os);
 	return os << min_.x << " " << min_.y << " " << min_.z << " " << max_.x << " " << max_.y << " " << max_.z << std::endl;
 }
+
+Hitpoint Box::intersect(Ray const& ray)
+{
+	Hitpoint schnitt = {};
+	float y;
+	float z;
+	float t = 0;
+	if (ray.direction.x != 0) {
+		t = (min_.x - ray.origin.x) / ray.direction.x;
+		y = ray.origin.y + t * ray.direction.y;
+		z = ray.origin.z + t * ray.direction.z;
+	}
+	else {
+		y = ray.origin.y;
+		z = ray.origin.z;
+	}
+	
+	if (min_.y <= y <= max_.y and min_.z <= z <= max_.z) {
+		schnitt.hit = true;
+		schnitt.distance = t;
+		schnitt.color_obj = get_color();
+		schnitt.name_obj = get_name();
+		schnitt.hit_p = { min_.x, y, z };
+		schnitt.ray_dir = ray.direction;
+	}
+	return schnitt;
+}

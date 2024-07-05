@@ -47,39 +47,39 @@ std::ostream& Sphere::print(std::ostream& os)const {
 	return os << rad << " " << point.x << " " << point.y << " " << point.z << std::endl;
 }
 
-Hitpoint Sphere::intersect(Ray r)const {
-	auto v = glm::normalize(r.direction);
+Hitpoint Sphere::intersect(Ray const& ray)const {
+	auto v = glm::normalize(ray.direction);
 	float dist = 0.0f;
-	if( glm::intersectRaySphere(r.origin, v, point, rad * rad, dist)) {
+	if( glm::intersectRaySphere(ray.origin, v, point, rad * rad, dist)) {
 		Hitpoint hitpoint;
 		hitpoint.hit = true;
 		hitpoint.distance = dist;
 		hitpoint.name_obj = Shape::get_name();
 		hitpoint.color_obj = Shape::get_color();
-		float a = (r.direction.x) * (r.direction.x) +
-			(r.direction.y) * (r.direction.y) + (r.direction.z) * (r.direction.z);
-		float b = 2 * ((r.origin.x - point.x) * r.direction.x +
-			+ (r.origin.y - point.y) * r.direction.y + (r.origin.z - point.z) * r.direction.z);
-		float c = ((r.origin.x - point.x) * (r.origin.x - point.x) +
-			(r.origin.y - point.y) * (r.origin.y - point.y) +
-			(r.origin.z - point.z) * (r.origin.z - point.z)) - (rad * rad);
+		float a = (ray.direction.x) * (ray.direction.x) +
+			(ray.direction.y) * (ray.direction.y) + (ray.direction.z) * (ray.direction.z);
+		float b = 2 * ((ray.origin.x - point.x) * ray.direction.x +
+			+ (ray.origin.y - point.y) * ray.direction.y + (ray.origin.z - point.z) * ray.direction.z);
+		float c = ((ray.origin.x - point.x) * (ray.origin.x - point.x) +
+			(ray.origin.y - point.y) * (ray.origin.y - point.y) +
+			(ray.origin.z - point.z) * (ray.origin.z - point.z)) - (rad * rad);
 		std::cout << "hier " << a << " " << b << " " << c << std::endl;
 		if ((b * b - 4 * a * c) == 0) {
 			float t = (-b) / (2 * a);
-			glm::vec3 treffer = { r.origin.x + (t * r.direction.x), r.origin.y + (t * r.direction.y),
-			r.origin.z + (t * r.direction.z) };
+			glm::vec3 treffer = { ray.origin.x + (t * ray.direction.x), ray.origin.y + (t * ray.direction.y),
+			ray.origin.z + (t * ray.direction.z) };
 			hitpoint.hit_p = treffer;
 		}
 		else {
 			float t1 = (-b + sqrt(b * b - 4 * a * c)) / (2 * a);
 			float t2 = (-b - sqrt(b * b - 4 * a * c)) / (2 * a);
-			glm::vec3 treffer = { r.origin.x + (t1 * r.direction.x), r.origin.y + (t1 * r.direction.y),
-			r.origin.z + (t1 * r.direction.z) }; 
+			glm::vec3 treffer = { ray.origin.x + (t1 * ray.direction.x), ray.origin.y + (t1 * ray.direction.y),
+			ray.origin.z + (t1 * ray.direction.z) };
 			hitpoint.hit_p = treffer;
 			
 
 		}
-		hitpoint.ray_dir = r.direction;
+		hitpoint.ray_dir = ray.direction;
 		return hitpoint;
 	}
 	else {
