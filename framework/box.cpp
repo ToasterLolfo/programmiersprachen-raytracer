@@ -1,5 +1,7 @@
 #include "box.hpp"
 #include "cmath"
+#include "ostream"
+#include <iostream>
 
 Box::Box():
 	Shape::Shape{"Quader"},
@@ -38,15 +40,11 @@ std::ostream& Box::print(std::ostream& os)const {
 Hitpoint Box::intersect(Ray const& ray)
 {
 	Hitpoint schnitt = {};
-	float y;
-	float z;
-	float x;
-	float t = 0;
 	if (ray.direction.x != 0) {
-		t = (min_.x - ray.origin.x) / ray.direction.x;
-		y = ray.origin.y + t * ray.direction.y;
-		z = ray.origin.z + t * ray.direction.z;
-		if (min_.y <= y <= max_.y and min_.z <= z <= max_.z) {
+		float t = (min_.x - ray.origin.x) / ray.direction.x;
+		float y = ray.origin.y + (t * ray.direction.y);
+		float z = ray.origin.z + (t * ray.direction.z);
+		if (min_.y <= y and y <= max_.y and min_.z <= z and z <= max_.z) {
 			schnitt.hit = true;
 			schnitt.distance = t;
 			schnitt.color_obj = get_color();
@@ -56,10 +54,10 @@ Hitpoint Box::intersect(Ray const& ray)
 	}
 	}
 	else if (ray.direction.x == 0 and ray.direction.y != 0) {
-		t = (min_.y - ray.origin.y) / ray.direction.y;
-		x = ray.origin.x + t * ray.direction.x;
-		z = ray.origin.z + t * ray.direction.z;
-		if (min_.x <= x <= max_.x and min_.z <= z <= max_.z) {
+		float t = (min_.y - ray.origin.y) / ray.direction.y;
+		float x = ray.origin.x;
+		float z = ray.origin.z + (t * ray.direction.z);
+		if (min_.x <= x and x <= max_.x and min_.z <= z and z <= max_.z) {
 			schnitt.hit = true;
 			schnitt.distance = t;
 			schnitt.color_obj = get_color();
@@ -69,10 +67,10 @@ Hitpoint Box::intersect(Ray const& ray)
 		}
 	}
 	else {
-		t = (min_.z - ray.origin.z) / ray.direction.z;
-		x = ray.origin.x + t * ray.direction.x;
-		y = ray.origin.y + t * ray.direction.y;
-		if (min_.x <= x <= max_.x and min_.y <= y <= max_.y) {
+		float t = (min_.z - ray.origin.z) / ray.direction.z;
+		float x = ray.origin.x;
+		float y = ray.origin.y;
+		if (min_.x <= x and x <= max_.x and min_.y <= y and y <= max_.y) {
 			schnitt.hit = true;
 			schnitt.distance = t;
 			schnitt.color_obj = get_color();
