@@ -4,10 +4,10 @@
 
 Shape::Shape():
 	name_{ "Körper" },
-	color_{ 0.5f, 0.5f, 0.5f }
+	color_{}
 {}
 
-Shape::Shape(std::string name, glm::vec3 color):
+Shape::Shape(std::string name, std::shared_ptr<Material> color):
 	name_(name),
 	color_(color) 
 {
@@ -16,7 +16,7 @@ Shape::Shape(std::string name, glm::vec3 color):
 
 Shape::Shape(std::string name) :
 	name_(name),
-	color_{ 0.5f, 0.5f, 0.5f }
+	color_{}
 {
 	std::cout << "Shape ctor" << std::endl;
 }
@@ -27,7 +27,7 @@ Shape::~Shape()
 }
 
 std::ostream& Shape::print(std::ostream& os)const {
-	return os << name_ << " " << color_.x << " " << color_.y << " " << color_.z << std::endl;
+	return os << name_ << " " << " " << color_ << " "  << std::endl;
 }
 
 std::ostream& operator<<(std::ostream & os, Shape const& s)
@@ -39,6 +39,6 @@ std::string Shape::get_name()const {
 	return name_;
 }
 
-glm::vec3 Shape::get_color()const {
+std::shared_ptr<Material> Shape::get_color()const {
 	return color_;
 }

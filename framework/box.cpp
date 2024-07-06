@@ -15,7 +15,7 @@ Box::Box(glm::vec3 min, glm::vec3 max) :
 	max_(max)
 {}
 
-Box::Box(glm::vec3 min, glm::vec3 max, std::string name, glm::vec3 color) :
+Box::Box(glm::vec3 min, glm::vec3 max, std::string name, std::shared_ptr<Material> color) :
 	Shape::Shape{name, color},
 	min_(min),
 	max_(max)

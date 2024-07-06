@@ -10,7 +10,7 @@ private:
 public:
 	Box();
 	Box(glm::vec3 min, glm::vec3 max);
-	Box(glm::vec3 min, glm::vec3 max, std::string name, glm::vec3 color);
+	Box(glm::vec3 min, glm::vec3 max, std::string name, std::shared_ptr<Material> color);
 	float area()const;
 	float volume()const;
 	std::ostream& print(std::ostream& os)const;

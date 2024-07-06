@@ -8,5 +8,9 @@ struct Material {
 	Color ka{ 0.0f, 0.0f, 0.0f };
 	Color ks{ 0.0f, 0.0f, 0.0f };
 	float m{ 0.0f };
+
+	friend std::ostream& operator<<(std::ostream& os, Material const& mat) {
+		os << mat.name << " " << mat.kd << mat.ka << mat.ks << " " << mat.m << std::endl;
+	}
 };
 #endif

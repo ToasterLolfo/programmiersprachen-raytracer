@@ -24,7 +24,7 @@ Sphere::Sphere(float r, glm::vec3 p) :
 	std::cout << "Sphere ctor" << std::endl;
 }
 
-Sphere::Sphere(float r, glm::vec3 p, std::string name, glm::vec3 color): 
+Sphere::Sphere(float r, glm::vec3 p, std::string name, std::shared_ptr<Material> color):
 	Shape::Shape{name, color},
 	rad(r),
 	point(p)

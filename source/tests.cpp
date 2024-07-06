@@ -6,6 +6,7 @@
 #include <ostream>
 #include <glm/glm.hpp>
 #include <glm/gtx/intersect.hpp>
+#include <memory>
 
 TEST_CASE(" box-test ", "[box-test]")
 {
@@ -96,7 +97,7 @@ TEST_CASE("intersect_ray_sphere", "[intersect]")
 	glm::vec3 ergeb = { 0, 1, 5 };
 
 	REQUIRE(h3.hit == true);
-	REQUIRE(h3.color_obj == s3.get_color());
+	REQUIRE(h3.color_obj->name == s3.get_color()->name);
 	REQUIRE(h3.name_obj == s3.get_name());
 	std::cout << h3.hit_p.x << h3.hit_p.y << h3.hit_p.z << std::endl;
 	REQUIRE(h3.hit_p == ergeb);
@@ -108,12 +109,13 @@ TEST_CASE("intersect_ray_sphere", "[intersect]")
 TEST_CASE("destruktor-test", "[dtor-test]")
 {
 	std::cout << " Beginn " << std::endl;
-	glm::vec3 red = { 1.0f, 0.0f, 0.0f };
+	Material mat = {};
+	auto mat_zeig = std::make_shared<Material>(mat);
 	glm::vec3 position{ 0.0f, 0.0f, 0.0f };
 	std::string name1 = "sphere0";
 	std::string name2 = "sphere1";
-	Sphere* s1 = new Sphere{ 1.2f, position,  name1, red };
-	Shape* s2 = new Sphere{ 1.2f, position,  name2, red };
+	Sphere* s1 = new Sphere{ 1.2f, position,  name1, mat_zeig };
+	Shape* s2 = new Sphere{ 1.2f, position,  name2, mat_zeig };
 
 	s1->print(std::cout);
 	s2->print(std::cout);

@@ -14,7 +14,7 @@ public:
 	Sphere();
 	~Sphere();
 	Sphere(float r, glm::vec3 p);
-	Sphere(float r, glm::vec3 p, std::string name, glm::vec3 color);
+	Sphere(float r, glm::vec3 p, std::string name, std::shared_ptr<Material> color);
 	float Shape::area()const override;
 	float Shape::volume()const override;
 	std::ostream& print(std::ostream& os)const;
