@@ -2,6 +2,7 @@
 #define HITPOINT_HPP
 #include <glm/vec3.hpp>
 #include <string>
+#include "Material.hpp"
 struct Hitpoint {
 	bool hit{ false };
 	float distance{ 0.0f };

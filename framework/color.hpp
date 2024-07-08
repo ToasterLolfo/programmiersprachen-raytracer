@@ -51,9 +51,9 @@ struct Color
     return tmp;
   }
 
-  float r;
-  float g;
-  float b;
+  float r{ 0.0f };
+  float g{ 0.0f };
+  float b{ 0.0f };
 };
 
 #endif //#define BUW_COLOR_HPP

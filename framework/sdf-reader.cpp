@@ -12,49 +12,17 @@
 #include <vector>
 #include "Material.hpp"
  
-
-
-
-int main(int argc, char** argv)
-{
-    // the first command line argument (argv[0]) is always the program name
-    // we need at least 2 arguments (name and the actual sdf path) to continue
-    // in a sensible way
-    if (argc < 2) {
-        // if we have less than 2 arguments, we tell the user how we want
-        // to call the application and exit the program
-        std::cout << "Please call the program in the following way:" << std::endl;
-        std::cout << argv[0] << " <sdf_file_path.sdf>" << std::endl;
-        return -1;
-    }
-
-    // we parse the first "real" argument and save it in a string
-    // this should contain our sdf-file-path
-    std::string const sdf_file_path = argv[1];
-
-    // we try to open the file using our string
-    // implicitly trying to open the file stream
+std::vector<std::shared_ptr<Material>> sdf_reader(std::string const sdf_file_path) {
     std::ifstream sdf_file(sdf_file_path);
-
-    // if we could not open the file (i.e. because we mistyped the path)
-    // we tell the user and exit the program
     if (!sdf_file.is_open()) {
         std::cout << "Could not find or open: " << sdf_file_path << std::endl;
-        return -1;
+        std::vector<std::shared_ptr<Material>> ergeb = {};
+        return ergeb;
     }
 
-    // create a vector of Material (caution, you should use shared pointers)
     std::vector<std::shared_ptr<Material>> mat_vec;
-
-    // we need a string as line buffer to read the sdf file line by line
     std::string line_buffer;
 
-    // debug info
-    // uint32_t line_count = 0;
-
-    // getline reads a input-stream (here: our filestream) line by 
-    // line (i.e. until a newline character) and stores the read
-    // results in a std::string object (our line buffer)
     while (std::getline(sdf_file, line_buffer)) {
         // debug info
         // std::cout << line_count << ": " << line_buffer << std::endl;
@@ -76,50 +44,48 @@ int main(int argc, char** argv)
             // if so, we continue
             if ("material" == token) {
 
-                // create a material (you should create a shared_ptr to Material)
+                
                 Material parsed_material;
                 auto mat_zeig = std::make_shared<Material>(parsed_material);
 
                 // parse the remaining expected parameters one by one and in order
-                // into our struct (you need to dereference your pointer, of course)
-                line_as_stream >> parsed_material.name;
+                line_as_stream >> mat_zeig->name;
 
-                // use a loop for convenience because we use glm::vec3s
+                
                 // the first 3 floats represent ambient light reflection 
                 // capabilities of the material (ka_red, ka_green, ka_blue)
-                
-                line_as_stream >> parsed_material.ka.r;
-                line_as_stream >> parsed_material.ka.g;
-                line_as_stream >> parsed_material.ka.b;
-                
 
-                // use a loop for convenience because we use glm::vec3s
+                line_as_stream >> mat_zeig->ka.r;
+                line_as_stream >> mat_zeig->ka.g;
+                line_as_stream >> mat_zeig->ka.b;
+
+
+                
                 // the second 3 floats represent diffuse light reflection 
                 // capabilities of the material (kd_red, kd_green, kd_blue)
-                
-                line_as_stream >> parsed_material.kd.r;
-                line_as_stream >> parsed_material.kd.g;
-                line_as_stream >> parsed_material.kd.b;
-                
 
-                // use a loop for convenience because we use glm::vec3s
+                line_as_stream >> mat_zeig->kd.r;
+                line_as_stream >> mat_zeig->kd.g;
+                line_as_stream >> mat_zeig->kd.b;
+
+
+                
                 // the second 3 floats represent specular light reflection 
                 // capabilities of the material (ks_red, ks_green, ks_blue)
-                line_as_stream >> parsed_material.ks.r;
-                line_as_stream >> parsed_material.ks.g;
-                line_as_stream >> parsed_material.ks.b;
+                line_as_stream >> mat_zeig->ks.r;
+                line_as_stream >> mat_zeig->ks.g;
+                line_as_stream >> mat_zeig->ks.b;
 
                 // the last float represents the specular power of the material (i.e.
                 // whether we create hard, small highlights, or large, soft highlights)
-                line_as_stream >> parsed_material.m;
+                line_as_stream >> mat_zeig->m;
 
-                // now we can push our material into our vector (you should of course use shared_ptrs)
                 mat_vec.push_back(mat_zeig);
 
                 // just as a sanity check, print the material attributes
                 std::cout << "Parsed material " <<
                     parsed_material.name << " "
-                    << parsed_material.ka << " " << parsed_material.kd << " " << parsed_material.ks << std::endl;
+                    << parsed_material.ka << " " << parsed_material.kd << " " << parsed_material.ks << " " << parsed_material.m << std::endl;
             }
             else {
                 std::cout << "Unexpected keyword: " << token << std::endl;
@@ -130,10 +96,8 @@ int main(int argc, char** argv)
         }
 
     }
-
-
-    // close our open file at the end
     sdf_file.close();
-
-    return 0;
+    return mat_vec;
 }
+
+

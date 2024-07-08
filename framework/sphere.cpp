@@ -54,8 +54,8 @@ Hitpoint Sphere::intersect(Ray const& ray) {
 		Hitpoint hitpoint;
 		hitpoint.hit = true;
 		hitpoint.distance = dist;
-		hitpoint.name_obj = Shape::get_name();
-		hitpoint.color_obj = Shape::get_color();
+		hitpoint.name_obj = name_;
+		hitpoint.color_obj = color_;
 		float a = (ray.direction.x) * (ray.direction.x) +
 			(ray.direction.y) * (ray.direction.y) + (ray.direction.z) * (ray.direction.z);
 		float b = 2 * ((ray.origin.x - point.x) * ray.direction.x +
