@@ -1,4 +1,5 @@
 #include "sphere.hpp"
+#include "Hitpoint.hpp"
 #include <numbers>
 #include <cmath>
 #include <glm/glm.hpp>
@@ -50,12 +51,14 @@ std::ostream& Sphere::print(std::ostream& os)const {
 Hitpoint Sphere::intersect(Ray const& ray) {
 	auto v = glm::normalize(ray.direction);
 	float dist = 0.0f;
-	if( glm::intersectRaySphere(ray.origin, v, point, rad * rad, dist)) {
+
+	/*if (glm::intersectRaySphere(ray.origin, v, point, rad * rad, dist)) {
 		Hitpoint hitpoint;
 		hitpoint.hit = true;
 		hitpoint.distance = dist;
 		hitpoint.name_obj = name_;
 		hitpoint.color_obj = color_;
+
 		float a = (ray.direction.x) * (ray.direction.x) +
 			(ray.direction.y) * (ray.direction.y) + (ray.direction.z) * (ray.direction.z);
 		float b = 2 * ((ray.origin.x - point.x) * ray.direction.x +
@@ -64,6 +67,9 @@ Hitpoint Sphere::intersect(Ray const& ray) {
 			(ray.origin.y - point.y) * (ray.origin.y - point.y) +
 			(ray.origin.z - point.z) * (ray.origin.z - point.z)) - (rad * rad);
 		std::cout << "hier " << a << " " << b << " " << c << std::endl;
+
+	
+
 		if ((b * b - 4 * a * c) == 0) {
 			float t = (-b) / (2 * a);
 			glm::vec3 treffer = { ray.origin.x + (t * ray.direction.x), ray.origin.y + (t * ray.direction.y),
@@ -86,6 +92,32 @@ Hitpoint Sphere::intersect(Ray const& ray) {
 		Hitpoint hitpoint;
 		hitpoint.hit = false;
 		return hitpoint;
+	}*/
+
+	//hinzugefügt
+	if (glm::intersectRaySphere(ray.origin, v, point, rad * rad, dist)) {
+		Hitpoint hitpoint;
+		hitpoint.hit = true;
+		hitpoint.distance = dist;
+		hitpoint.name_obj = name_;
+		hitpoint.color_obj = color_;
+
+		// Berechne den Schnittpunkt und die Normale
+		glm::vec3 intersection_point = ray.origin + dist * ray.direction;
+		hitpoint.hit_p = intersection_point;
+		hitpoint.normal = glm::normalize(hitpoint.hit_p - point);
+
+		// Berechne Reflexion
+		hitpoint.reflection_dir = glm::reflect(ray.direction, hitpoint.normal);
+
+		// Berechne Brechung
+		float eta = 1.0f / hitpoint.refraction_index; // Annahme: Das Medium hat einen Brechungsindex
+		hitpoint.refraction_dir = glm::refract(ray.direction, hitpoint.normal, eta);
+
+		return hitpoint;
 	}
-	
+	else {
+		return Hitpoint(); // Keine Kollision
+	}
+	//hinzugefügt ende
 }

@@ -2,10 +2,7 @@
 #include <iostream>
 
 
-Shape::Shape():
-	name_{ "Körper" },
-	color_{}
-{}
+Shape::Shape(): name_{ "Körper" }, color_() {}
 
 Shape::Shape(std::string name, std::shared_ptr<Material> color):
 	name_(name),

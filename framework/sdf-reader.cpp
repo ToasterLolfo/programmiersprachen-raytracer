@@ -1,4 +1,4 @@
-// material parsing example: Aufgabe 6.5
+/*// material parsing example: Aufgabe 6.5
 
 #include <glm/glm.hpp>
 
@@ -46,7 +46,7 @@ std::vector<std::shared_ptr<Material>> sdf_reader(std::string const sdf_file_pat
 
                 
                 Material parsed_material;
-                auto mat_zeig = std::make_shared<Material>(parsed_material);
+                auto mat_zeig = std::make_shared<Material> (/*parsed_material*//*);
 
                 // parse the remaining expected parameters one by one and in order
                 line_as_stream >> mat_zeig->name;
@@ -84,7 +84,7 @@ std::vector<std::shared_ptr<Material>> sdf_reader(std::string const sdf_file_pat
 
                 // just as a sanity check, print the material attributes
                 std::cout << "Parsed material " <<
-                    parsed_material.name << " "
+                    mat_zeig->name << " "
                     << parsed_material.ka << " " << parsed_material.kd << " " << parsed_material.ks << " " << parsed_material.m << std::endl;
             }
             else {
@@ -98,6 +98,102 @@ std::vector<std::shared_ptr<Material>> sdf_reader(std::string const sdf_file_pat
     }
     sdf_file.close();
     return mat_vec;
+}*/
+
+#include "Material.hpp"
+#include "camera.hpp"
+
+#include <glm/glm.hpp>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <tuple>
+#include <algorithm> // für std::all_of
+
+std::tuple<std::vector<std::shared_ptr<Material>>, std::vector<std::shared_ptr<Camera>>> sdf_reader(const std::string& sdf_file_path) {
+    std::ifstream sdf_file(sdf_file_path);
+    if (!sdf_file.is_open()) {
+        std::cerr << "Konnte Datei nicht finden oder oeffnen: " << sdf_file_path << std::endl;
+        return {};
+    }
+
+    std::vector<std::shared_ptr<Material>> mat_vec;
+    std::vector<std::shared_ptr<Camera>> cam_vec;
+    std::string line_buffer;
+
+    while (std::getline(sdf_file, line_buffer)) {
+        // Entferne führende Leerzeichen
+        line_buffer.erase(line_buffer.begin(), std::find_if(line_buffer.begin(), line_buffer.end(), [](unsigned char ch) {
+            return !std::isspace(ch);
+            }));
+
+        // Ignoriere leere Zeilen
+        if (line_buffer.empty()) {
+            continue;
+        }
+
+        // Ignoriere einzeilige Kommentare
+        if (line_buffer[0] == '#') {
+            continue;
+        }
+
+        // Ignoriere mehrzeilige Kommentare
+        if (line_buffer.substr(0, 2) == "/*") {
+            while (std::getline(sdf_file, line_buffer) && line_buffer.find("*/") == std::string::npos) {
+                // Lese weiter, bis das Ende des Kommentars gefunden wird
+            }
+            continue;
+        }
+
+        std::istringstream line_as_stream(line_buffer);
+        std::string token;
+
+        line_as_stream >> token;
+        if (token == "define") {
+            line_as_stream >> token;
+            if (token == "material") {
+                auto mat_ptr = std::make_shared<Material>();
+
+                // Material-Eigenschaften parsen
+                line_as_stream >> mat_ptr->name
+                    >> mat_ptr->ka.r >> mat_ptr->ka.g >> mat_ptr->ka.b
+                    >> mat_ptr->kd.r >> mat_ptr->kd.g >> mat_ptr->kd.b
+                    >> mat_ptr->ks.r >> mat_ptr->ks.g >> mat_ptr->ks.b
+                    >> mat_ptr->m;
+
+                mat_vec.push_back(mat_ptr);
+
+                std::cout << "Material geparst: " << mat_ptr->name << " "
+                    << mat_ptr->ka << " " << mat_ptr->kd << " " << mat_ptr->ks << " " << mat_ptr->m << std::endl;
+            }
+            else if (token == "camera") {
+                std::string name;
+                float fov_x;
+                glm::vec3 eye, dir, up;
+
+                line_as_stream >> name >> fov_x
+                    >> eye.x >> eye.y >> eye.z
+                    >> dir.x >> dir.y >> dir.z
+                    >> up.x >> up.y >> up.z;
+
+                auto cam_ptr = std::make_shared<Camera>(name, fov_x, eye, dir, up);
+                cam_vec.push_back(cam_ptr);
+
+                std::cout << "Kamera geparst: " << name << " FOV: " << fov_x
+                    << " Auge: (" << eye.x << "," << eye.y << "," << eye.z << ")"
+                    << " Richtung: (" << dir.x << "," << dir.y << "," << dir.z << ")"
+                    << " Oben: (" << up.x << "," << up.y << "," << up.z << ")" << std::endl;
+            }
+            else {
+                std::cerr << "Unerwartetes Schlüsselwort nach 'define': " << token << std::endl;
+            }
+        }
+        else if (!std::all_of(line_buffer.begin(), line_buffer.end(), ::isspace)) {
+            std::cerr << "Unerwartetes Schlüsselwort oder ungültige Zeile: " << line_buffer << std::endl;
+        }
+    }
+
+    return std::make_tuple(mat_vec, cam_vec);
 }
-
-

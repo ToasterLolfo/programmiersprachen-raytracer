@@ -1,4 +1,4 @@
-#define CATCH_CONFIG_RUNNER
+/*#define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 #include "shape.hpp"
 #include "sphere.hpp"
@@ -6,14 +6,15 @@
 #include <ostream>
 #include <glm/glm.hpp>
 #include <glm/gtx/intersect.hpp>
-#include <memory>/**/
+#include <memory>
 #include "sdf-reader.cpp"
 
 
 TEST_CASE("sdf-reader-test", "[sdf-r-test]")
 {
-	std::string sdf_path = "C:\\Users\\Nils Mächler\\Desktop\\Übungen C++\\raytracer-sdf.sdf";
-	std::vector<std::shared_ptr<Material>> scene = sdf_reader(sdf_path);
+	//std::string sdf_path = "C:\\Users\\garud\\Desktop\\sdfreader\\raytracer-sdf.sdf";
+	//std::vector<std::shared_ptr<Material>> scene = sdf_reader(sdf_path);
+	auto[material, camera] = sdf_reader("C:\\Users\\garud\\Desktop\\sdfreader\\raytracer-sdf.sdf");
 }
 
 
@@ -52,7 +53,7 @@ TEST_CASE("Outstream-test", "[os-test]") {
 	Sphere s = {};
 	Box b = {};
 	std::cout << b << " " << s << std::endl;
-}
+}*/
 /*
 TEST_CASE("intersect_ray_sphere", "[intersect]")
 {
@@ -115,7 +116,7 @@ TEST_CASE("intersect_ray_sphere", "[intersect]")
 
 }
 */
-TEST_CASE("destruktor-test", "[dtor-test]")
+/*TEST_CASE("destruktor-test", "[dtor-test]")
 {
 	std::cout << " Beginn " << std::endl;
 	Material mat = {};
@@ -161,4 +162,58 @@ TEST_CASE("box-intersect-test", "[b-inter-test]")
 int main(int argc, char *argv[])
 { 
   return Catch::Session().run(argc, argv);
+}*/
+
+// main.cpp
+#include "window.hpp"
+#include "renderer.hpp"
+#include "sdf-reader.cpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <memory>
+
+int main(int argc, char* argv[]) {
+
+	std::ofstream logFile("debug_log.txt");
+	logFile << "Programm gestartet" << std::endl;
+
+	unsigned const width = 800;
+	unsigned const height = 600;
+	std::string const filename = "./rendered_scene.ppm";
+
+	// Fenster erstellen
+	Window window({ width, height });
+
+	// SDF-Datei lesen
+	std::string sdf_file = "scene.sdf";
+	auto [materials, cameras] = sdf_reader(sdf_file);
+
+	if (cameras.empty()) {
+		std::cerr << "Keine Kamera in der SDF-Datei gefunden." << std::endl;
+		return 1;
+	}
+
+	// Erste Kamera aus der SDF-Datei verwenden
+	auto& camera = cameras[0];
+
+	// Renderer mit der Kamera initialisieren
+	Renderer renderer(width, height, filename, *camera);
+
+	// Render-Schleife
+	while (!window.should_close()) {
+		if (window.get_key(GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+			window.close();
+		}
+
+		// Rendern
+		renderer.render();
+
+		// Bild anzeigen
+		window.show(renderer.color_buffer());
+	}
+
+
+	return 0;
 }

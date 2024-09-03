@@ -1,7 +1,10 @@
 #include "box.hpp"
 #include "cmath"
 #include "ostream"
+#include "Hitpoint.hpp"
 #include <iostream>
+#include <glm/glm.hpp>
+#include <algorithm>
 
 Box::Box():
 	Shape::Shape{"Quader"},
@@ -84,7 +87,7 @@ Hitpoint Box::intersect(Ray const& ray)
 	return schnitt;
 }*/
 
-Hitpoint Box::intersect(Ray const& ray) {                                    // Deklaration der intersect-Methode für die Box-Klasse, die einen Ray-Parameter akzeptiert und ein HitPoint-Objekt zurückgibt.
+/*Hitpoint Box::intersect(Ray const& ray) {                                    // Deklaration der intersect-Methode für die Box-Klasse, die einen Ray-Parameter akzeptiert und ein HitPoint-Objekt zurückgibt.
 	float tmin = (min_.x - ray.origin.x) / ray.direction.x;                        // Berechnung der Eintritts- und Austrittszeiten für die x-Koordinate. tmin ist die Zeit, zu der der Strahl die minimale x-Grenze der Box erreicht.
 	float tmax = (max_.x - ray.origin.x) / ray.direction.x;                        // tmax ist die Zeit, zu der der Strahl die maximale x-Grenze der Box erreicht.
 
@@ -120,4 +123,51 @@ Hitpoint Box::intersect(Ray const& ray) {                                    // 
 	glm::vec3 intersection_point = ray.origin + tmin * ray.direction;              // Berechnen des Schnittpunktes in Weltkoordinaten, indem die Richtung des Strahls mit tmin multipliziert und zum Ursprung des Strahls addiert wird.
 	return Hitpoint(true, tmin, name_, color_, intersection_point, ray.direction); // Rückgabe eines HitPoint-Objekts mit den Informationen des Schnittpunkts, einschließlich `hit = true`.
 
+}*/
+
+Hitpoint Box::intersect(Ray const& ray) {
+	// Berechne die Entfernung entlang der x-Achse, bei der der Strahl die Box zuerst und zuletzt trifft
+	float t_near_x = (min_.x - ray.origin.x) / ray.direction.x;
+	float t_far_x = (max_.x - ray.origin.x) / ray.direction.x;
+	if (t_near_x > t_far_x) std::swap(t_near_x, t_far_x);
+
+	// Berechne die Entfernung entlang der y-Achse, bei der der Strahl die Box zuerst und zuletzt trifft
+	float t_near_y = (min_.y - ray.origin.y) / ray.direction.y;
+	float t_far_y = (max_.y - ray.origin.y) / ray.direction.y;
+	if (t_near_y > t_far_y) std::swap(t_near_y, t_far_y);
+
+	// Überprüfe, ob der Strahl überhaupt die Box treffen kann, indem man die Bereiche entlang der x- und y-Achse vergleicht
+	if ((t_near_x > t_far_y) || (t_near_y > t_far_x)) {
+		return Hitpoint(); // Kein Schnittpunkt
+	}
+
+	// Aktualisiere den nächsten Schnittpunkt, um sicherzustellen, dass wir den spätesten Eintrittspunkt haben
+	if (t_near_y > t_near_x) t_near_x = t_near_y;
+	if (t_far_y < t_far_x) t_far_x = t_far_y;
+
+	// Berechne die Entfernung entlang der z-Achse, bei der der Strahl die Box zuerst und zuletzt trifft
+	float t_near_z = (min_.z - ray.origin.z) / ray.direction.z;
+	float t_far_z = (max_.z - ray.origin.z) / ray.direction.z;
+	if (t_near_z > t_far_z) std::swap(t_near_z, t_far_z);
+
+	// Überprüfe erneut, ob der Strahl die Box treffen kann, diesmal unter Berücksichtigung der z-Achse
+	if ((t_near_x > t_far_z) || (t_near_z > t_far_x)) {
+		return Hitpoint(); // Kein Schnittpunkt
+	}
+
+	// Aktualisiere den nächsten Schnittpunkt basierend auf der z-Achse
+	if (t_near_z > t_near_x) t_near_x = t_near_z;
+	if (t_far_z < t_far_x) t_far_x = t_far_z;
+
+	// Wenn der Schnittpunkt vor dem Ursprung des Strahls liegt, gibt es keinen gültigen Schnittpunkt
+	if (t_near_x < 0) {
+		t_near_x = t_far_x;
+		if (t_near_x < 0) {
+			return Hitpoint(); // Kein Schnittpunkt
+		}
+	}
+
+	// Berechne den Schnittpunkt und erstelle das Hitpoint-Objekt
+	glm::vec3 intersection_point = ray.origin + t_near_x * ray.direction;
+	return Hitpoint(true, t_near_x, name_, color_, intersection_point, ray.direction);
 }
